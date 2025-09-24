@@ -66,7 +66,6 @@ Each script generates a CSV file that lists the minimum comparisons and the part
 
 ## Understanding Integer Partitions
 
-## Understanding Integer Partitions
 
 An integer partition divides a positive integer `n` into a set of positive integers that sum up to `n`. These partitions represent possible groupings of the solutions. For example, for `n = 5`, we have a partition `3 + 1 + 1`. It means the first front has 3 solutions, and the second and third fronts have one solution each — i.e., the cardinality of the first front is 3, and the cardinality of the second and third fronts is 1.
 
