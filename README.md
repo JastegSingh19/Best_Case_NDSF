@@ -121,7 +121,7 @@ This method ensures that partitions are generated in non-increasing order, avoid
 For each partition, the total number of comparisons is calculated as the sum of two terms:
 
 1. **Combination Comparisons**  
-   Represents the number of comparisons within each group of \( n_i \) elements in the partition.  
+   Represents the number of comparisons within each group of $n_i$ elements in the partition.  
 **Formula:**
 
 $$
