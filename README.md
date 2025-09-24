@@ -2,13 +2,14 @@
 
 ## Overview
 
-This project focuses on calculating the **minimum number of comparisons** required for **Non-Dominated Sorting Fronts**, a critical operation in multi-objective optimization problems. Non-Dominated Sorting is essential for identifying the rank or "fronts" of solutions based on their dominance relationships.
+This project focuses on calculating the minimum number of dominance comparisons required by the Efficient Non-dominated Sort Approach (Sequential and Binary versions) for the non-dominated sorting problem. The sequential version is known as **ENS-SS**, and the binary version is known as **ENS-BS**. Non-Dominated Sorting is important for identifying the rank of the solutions.
 
-The Python scripts in this project are used to generate all integer partitions of numbers from 2 to 100. These partitions are analyzed to determine the **optimal configurations** that minimize the number of comparisons required for sorting. These calculations significantly reduce the computational complexity of Non-Dominated Sorting algorithms, making them more efficient.
+The Python scripts in this project are used to find the cardinality of the fronts that minimizes the number of dominance comparisons for both ENS-SS and ENS-BS. To find the cardinality of the front that minimizes the number of dominance comparisons, we explore all the possible cardinalities of the front for a population size and select the one that gives the minimum number of dominance comparisons. For exploring all the possible cardinalities of the fronts, we have used the concept of integer partitions and generated all the partitions (in non-increasing order). These partitions correspond to the cardinality of the fronts. We have considered the population size from 2 to 100 and obtained the cardinality of the fronts that minimize the number of dominance comparisons for ENS-SS and ENS-BS both.
 
 The code is organized into two separate Python files located in the `Code/` directory, and the generated CSV files are stored in the `csv/` directory.
 
-This README explains how the code works, how partitions are generated, and how these computations contribute to achieving efficient Non-Dominated Sorting by minimizing the number of comparisons.
+This README explains how the code works, how partitions are generated, and how these computations contribute to achieving the cardinality of the fronts.
+
 
 ---
 
@@ -32,9 +33,8 @@ This README explains how the code works, how partitions are generated, and how t
 
 ## Introduction
 
-In multi-objective optimization, Non-Dominated Sorting is used to divide solutions into "fronts" based on their dominance relationships. The goal is to assign each solution to a rank with minimal computational effort, measured by the number of comparisons needed.
+In Pareto dominance-based multi-objective evolutionary algorithms, Non-Dominated Sorting is used to divide the solutions into "fronts" based on their dominance relationships. The goal is to assign each solution to a rank. This project applies the concept of integer partitions to find the cardinality of the front that minimizes the number of dominance comparisons by two approaches — **ENS-SS** and **ENS-BS**. For a given number of solutions `n`, integer partitions represent possible groupings of the solutions, and the number of dominance comparisons required to sort them is analyzed.
 
-This project applies integer partitions to optimize the sorting process. For a given number of solutions `n`, integer partitions represent possible groupings of solutions, and the number of comparisons required to sort them is analyzed. The optimal partition minimizes the total comparisons.
 
 ---
 
@@ -66,19 +66,20 @@ Each script generates a CSV file that lists the minimum comparisons and the part
 
 ## Understanding Integer Partitions
 
-An integer partition divides a positive integer `n` into a set of positive integers that sum up to `n`. These partitions represent possible groupings of solutions in Non-Dominated Sorting, where each group corresponds to a level of dominance.
+## Understanding Integer Partitions
+
+An integer partition divides a positive integer `n` into a set of positive integers that sum up to `n`. These partitions represent possible groupings of the solutions. For example, for `n = 5`, we have a partition `3 + 1 + 1`. It means the first front has 3 solutions, and the second and third fronts have one solution each — i.e., the cardinality of the first front is 3, and the cardinality of the second and third fronts is 1.
 
 **Example for n = 5:**
 
-- 5
-- 4 + 1
-- 3 + 2
-- 3 + 1 + 1
-- 2 + 2 + 1
-- 2 + 1 + 1 + 1
+- 5  
+- 4 + 1  
+- 3 + 2  
+- 3 + 1 + 1  
+- 2 + 2 + 1  
+- 2 + 1 + 1 + 1  
 - 1 + 1 + 1 + 1 + 1
 
-Each partition defines how comparisons are distributed across groups. The total number of comparisons depends on the structure of the partition, and the goal is to find the partition that minimizes this total.
 
 ---
 
@@ -86,7 +87,8 @@ Each partition defines how comparisons are distributed across groups. The total 
 
 ### Generating Partitions
 
-The function `generate_partitions(n)` is central to both scripts. It generates all unique partitions of a given integer `n` using recursion and backtracking.
+The function `generate_partitions(n)` is central to both scripts. It generates all unique partitions of a given integer `n` using recursion and backtracking in non-increasing order, i.e., the elements of the partitions are generated in non-increasing order.
+
 
 #### How It Works
 
@@ -114,37 +116,45 @@ This method ensures that partitions are generated in non-increasing order, avoid
 
 ---
 
-### Calculating Comparisons
+## Calculating Comparisons
 
 For each partition, the total number of comparisons is calculated as the sum of two terms:
 
-1. **Combination Comparisons**:
-   - Represents the number of comparisons within each group of `ni` elements in the partition.
-   - **Formula**:
-     ```
-     comb_comparisons = sum((ni * (ni - 1)) / 2)
-     ```
-     where `ni` is each number in the partition.
+1. **Combination Comparisons**  
+   Represents the number of comparisons within each group of \( n_i \) elements in the partition.  
+   **Formula:**
 
-2. **Positional Comparisons**:
-   - Models the additional comparisons required based on the position of the group in the dominance hierarchy.
-   - Calculated differently in each script:
-     - **Binary Search Model**:
-       - **Formula**:
-         ```
-         positional_comparisons = sum(ni * ceil(log2(i)))
-         ```
-         where `i` is the position of the group.
-     - **Linear Model**:
-       - **Formula**:
-         ```
-         positional_comparisons = sum(ni * (i - 1))
-         ```
+   $$
+   \sum_{i=1}^{k} \frac{n_i (n_i - 1)}{2}
+   $$
 
-The total comparisons are then: 
-total_comparisons = comb_comparisons + positional_comparisons
+   where \( k \) is the number of groups in the partition, and \( n_i \) is the size of the \( i^{\text{th}} \) group.
 
----
+2. **Positional Comparisons**  
+   Models the additional comparisons required based on the position of the group in the dominance hierarchy.  
+   Calculated differently for ENS-BS and ENS-SS:
+
+ENS-BS (Binary Search Model):
+
+$$
+\sum_{i=1}^{k} n_i \cdot \lceil \log_{2}(i) \rceil
+$$
+
+ENS-SS (Sequential/Linear Model):
+
+$$
+\sum_{i=1}^{k} n_i \cdot (i - 1)
+$$
+
+**Total comparisons:**
+
+$$
+\text{Total} \;=\; 
+\underbrace{\sum_{i=1}^{k} \frac{n_i (n_i - 1)}{2}}_{\text{Combination}}
+\;+\;
+\underbrace{\text{(Positional as per ENS-BS/ENS-SS)}}_{\text{Positional}}
+$$
+
 
 ## Running the Code
 
@@ -173,16 +183,18 @@ Each row in the CSV files provides insights into the partitions that minimize th
 
 For `n = 4` in `partition_table_with_min_comparisons_binary_search.csv`:
 
-| n   | Min Comparisons | Partitions       |
-|-----|-----------------|------------------|
-| 4   | 6               | [[4], [2, 2]]    |
+| n   | Min Comparisons | Partitions                  |
+|-----|-----------------|-----------------------------|
+| 4   | 4               | [[3, 1], [2, 2], [2, 1, 1]] |
 
 **Explanation**:
 
-- **Minimum Comparisons**: 6
+- **Minimum Comparisons**: 4  
 - **Optimal Partitions**:
-  - `[4]`: Single group of 4 elements.
-  - `[2, 2]`: Two groups, each with 2 elements.
+  - `[3, 1]`: One front with 3 solutions, another with 1.  
+  - `[2, 2]`: Two fronts, each with 2 solutions.  
+  - `[2, 1, 1]`: Three fronts, with sizes 2, 1, and 1.  
+
 
 ### Observations
 
