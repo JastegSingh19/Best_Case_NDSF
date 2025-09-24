@@ -122,15 +122,17 @@ For each partition, the total number of comparisons is calculated as the sum of 
 
 1. **Combination Comparisons**  
    Represents the number of comparisons within each group of \( n_i \) elements in the partition.  
-   **Formula:**
+**Formula:**
 
-   $$
-   \sum_{i=1}^{k} \frac{n_i (n_i - 1)}{2}
-   $$
+$$
+\sum_{i=1}^{k} \frac{n_i (n_i - 1)}{2}
+$$
 
-   where \( k \) is the number of groups in the partition, and \( n_i \) is the size of the \( i^{\text{th}} \) group.
+where $k$ is the number of groups in the partition, and $n_i$ is the size of the $i^{\text{th}}$ group.
 
-2. **Positional Comparisons**  
+
+
+3. **Positional Comparisons**  
    Models the additional comparisons required based on the position of the group in the dominance hierarchy.  
    Calculated differently for ENS-BS and ENS-SS:
 
