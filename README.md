@@ -21,12 +21,10 @@ This README explains how the code works, how partitions are generated, and how t
 - [Understanding Integer Partitions](#understanding-integer-partitions)
 - [Code Structure](#code-structure)
   - [Generating Partitions](#generating-partitions)
-  - [Calculating Comparisons](#calculating-comparisons)
 - [Running the Code](#running-the-code)
 - [Output Files](#output-files)
 - [Interpreting the Results](#interpreting-the-results)
 - [Conclusion](#conclusion)
-- [Further Exploration](#further-exploration)
 - [Contact Information](#contact-information)
 
 ---
@@ -115,48 +113,6 @@ This method ensures that partitions are generated in non-increasing order, avoid
 
 ---
 
-## Calculating Comparisons
-
-For each partition, the total number of comparisons is calculated as the sum of two terms:
-
-1. **Combination Comparisons**  
-   Represents the number of comparisons within each group of $n_i$ elements in the partition.  
-**Formula:**
-
-$$
-\sum_{i=1}^{k} \frac{n_i (n_i - 1)}{2}
-$$
-
-where $k$ is the number of groups in the partition, and $n_i$ is the size of the $i^{\text{th}}$ group.
-
-
-
-3. **Positional Comparisons**  
-   Models the additional comparisons required based on the position of the group in the dominance hierarchy.  
-   Calculated differently for ENS-BS and ENS-SS:
-
-ENS-BS (Binary Search Model):
-
-$$
-\sum_{i=1}^{k} n_i \cdot \lceil \log_{2}(i) \rceil
-$$
-
-ENS-SS (Sequential/Linear Model):
-
-$$
-\sum_{i=1}^{k} n_i \cdot (i - 1)
-$$
-
-**Total comparisons:**
-
-$$
-\text{Total} \;=\; 
-\underbrace{\sum_{i=1}^{k} \frac{n_i (n_i - 1)}{2}}_{\text{Combination}}
-\;+\;
-\underbrace{\text{(Positional as per ENS-BS/ENS-SS)}}_{\text{Positional}}
-$$
-
-
 ## Running the Code
 
 1. Navigate to the `Code/` directory and run the scripts:
@@ -206,17 +162,7 @@ For `n = 4` in `partition_table_with_min_comparisons_binary_search.csv`:
 
 ## Conclusion
 
-This project demonstrates how integer partitions can be analyzed to minimize the number of comparisons required for Non-Dominated Sorting. By generating all possible partitions and calculating their comparison costs, we identify the optimal configurations for efficient sorting.
-
-The results are directly applicable to improving the performance of Non-Dominated Sorting algorithms in multi-objective optimization.
-
----
-
-## Further Exploration
-
-- **Algorithm Optimization**: Use the results to optimize Non-Dominated Sorting algorithms.
-- **Mathematical Analysis**: Investigate patterns in the optimal partitions across different `n`.
-- **Comparison Models**: Explore alternative models for calculating comparisons.
+This project demonstrates how integer partitions can be linked to the cardinality of the fronts to find the best case scenario for an algorithm. By generating all possible partitions and calculating corresponding dominance comparisons, we identify the optimal configurations for ENS-SS and ENS-BS.
 
 ---
 
